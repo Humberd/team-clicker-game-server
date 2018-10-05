@@ -1,3 +1,7 @@
+var foo;
+
 function onCastSpell(creature) {
-  print("Who am I? " + whoAmI());
+  creature.foo(function() {
+    print("hello");
+  })
 }

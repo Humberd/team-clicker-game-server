@@ -47,5 +47,4 @@ class RuneXml {
         return "RuneXml(group='$group', spellid=$spellid, name='$name', id=$id, allowfaruse=$allowfaruse, charges=$charges, level=$level, magiclevel=$magiclevel, cooldown=$cooldown, groupcooldown=$groupcooldown, range=$range, mana=$mana, aggressive=$aggressive, selftarget=$selftarget, needtarget=$needtarget, blocktype='$blocktype', script='$script', vocations=$vocations)"
     }
 
-
 }

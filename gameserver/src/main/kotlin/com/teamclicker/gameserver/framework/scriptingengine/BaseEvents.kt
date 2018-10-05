@@ -8,7 +8,8 @@ import javax.script.ScriptEngineManager
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamReader
 
-abstract class BaseEvents : Loadable {
+
+abstract class BaseEvents {
     protected var loaded = false
 
     abstract fun getScriptBaseName(): String
@@ -16,7 +17,7 @@ abstract class BaseEvents : Loadable {
     abstract fun registerEvent(event: RuneSpell)
     abstract fun clear()
 
-    override fun loadFromXml() {
+    fun loadFromXml() {
         if (isLoaded()) {
             throw Exception("It's already loaded.")
         }
@@ -50,20 +51,26 @@ abstract class BaseEvents : Loadable {
 
             val scriptFileName = "$basePath/scripts/${event.data.script}"
             event.loadScript(scriptFileName)
-            event.invokeEvent()
         }
         sr.close()
+
+        loaded = true
     }
 
-    override fun reload() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    fun reload() {
+        loaded = false
+        clear()
+        loadFromXml()
     }
 
-    override fun isLoaded(): Boolean {
+    fun isLoaded(): Boolean {
         return loaded
     }
 }
 
 fun main(args: Array<String>) {
-    Spells(ScriptEngineManager()).loadFromXml()
+    val scriptingManager = JsScriptingManager()
+    scriptingManager.loadGlobalTypes()
+    scriptingManager.loadTsTypeDefs()
+    scriptingManager.loadScripts()
 }

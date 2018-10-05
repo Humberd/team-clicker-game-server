@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 @JacksonXmlRootElement(localName = "vocation")
 class VocationXml {
     @JacksonXmlProperty
-    var name: String =""
+    var name: String = ""
     @JacksonXmlProperty
     var showInDescription: Int = 0
 }
