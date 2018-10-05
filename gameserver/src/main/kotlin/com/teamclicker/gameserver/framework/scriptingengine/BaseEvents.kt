@@ -1,7 +1,7 @@
 package com.teamclicker.gameserver.framework.scriptingengine
 
 import com.teamclicker.gameserver.framework.scriptingengine.spells.RuneSpell
-import com.teamclicker.gameserver.framework.scriptingengine.spells.SpellEvents
+import com.teamclicker.gameserver.framework.scriptingengine.spells.Spells
 import java.io.File
 import java.io.FileInputStream
 import javax.script.ScriptEngineManager
@@ -10,13 +10,10 @@ import javax.xml.stream.XMLStreamReader
 
 abstract class BaseEvents : Loadable {
     protected var loaded = false
-    var scripted = false
-        private set
 
-    abstract fun getScriptInterface()
     abstract fun getScriptBaseName(): String
     abstract fun getEvent(): RuneSpell
-    abstract fun registerEvent()
+    abstract fun registerEvent(event: RuneSpell)
     abstract fun clear()
 
     override fun loadFromXml() {
@@ -68,5 +65,5 @@ abstract class BaseEvents : Loadable {
 }
 
 fun main(args: Array<String>) {
-    SpellEvents(ScriptEngineManager()).loadFromXml()
+    Spells(ScriptEngineManager()).loadFromXml()
 }

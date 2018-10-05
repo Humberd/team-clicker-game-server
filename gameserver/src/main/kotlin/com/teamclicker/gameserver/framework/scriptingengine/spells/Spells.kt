@@ -2,14 +2,13 @@ package com.teamclicker.gameserver.framework.scriptingengine.spells
 
 import com.teamclicker.gameserver.framework.scriptingengine.BaseEvents
 import com.teamclicker.gameserver.framework.scriptingengine.JsScriptInterface
+import java.util.*
 import javax.script.ScriptEngineManager
 
-class SpellEvents(
+class Spells(
     val scriptEngineManager: ScriptEngineManager
 ) : BaseEvents() {
-    override fun getScriptInterface() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    private val runes = TreeMap<Int, RuneSpell>()
 
     override fun getScriptBaseName() = "spells"
 
@@ -17,11 +16,11 @@ class SpellEvents(
         return RuneSpell(JsScriptInterface(scriptEngineManager))
     }
 
-    override fun registerEvent() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun registerEvent(event: RuneSpell) {
+        runes.put(event.data.spellid, event)
     }
 
     override fun clear() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        runes.clear()
     }
 }
