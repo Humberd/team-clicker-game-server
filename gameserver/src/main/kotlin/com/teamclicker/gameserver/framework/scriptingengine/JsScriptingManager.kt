@@ -23,6 +23,7 @@ class JsScriptingManager {
             it.outputKind = TypeScriptOutputKind.global
             it.jsonLibrary = JsonLibrary.jackson2
             it.mapEnum = EnumMapping.asEnum
+            it.noFileComment = true
         }
         TypeScriptGenerator(settings).generateTypeScript(input, output)
     }
