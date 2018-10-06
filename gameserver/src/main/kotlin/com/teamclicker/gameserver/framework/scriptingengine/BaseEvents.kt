@@ -1,10 +1,8 @@
 package com.teamclicker.gameserver.framework.scriptingengine
 
 import com.teamclicker.gameserver.framework.scriptingengine.spells.RuneSpell
-import com.teamclicker.gameserver.framework.scriptingengine.spells.Spells
 import java.io.File
 import java.io.FileInputStream
-import javax.script.ScriptEngineManager
 import javax.xml.stream.XMLInputFactory
 import javax.xml.stream.XMLStreamReader
 
@@ -66,11 +64,4 @@ abstract class BaseEvents {
     fun isLoaded(): Boolean {
         return loaded
     }
-}
-
-fun main(args: Array<String>) {
-    val scriptingManager = JsScriptingManager()
-    scriptingManager.loadGlobalTypes()
-    scriptingManager.loadTsTypeDefs()
-    scriptingManager.loadScripts()
 }
