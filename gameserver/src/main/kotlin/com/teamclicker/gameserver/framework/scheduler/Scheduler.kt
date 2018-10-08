@@ -7,13 +7,13 @@ import java.util.concurrent.PriorityBlockingQueue
 class Scheduler : Thread() {
     var state = THREAD_STATE_TERMINATED
     var lastEventId: Long = 0L
-    val eventList: PriorityBlockingQueue<SchedulerTask>
+    val eventList: PriorityBlockingQueue<Task>
     val eventIds: HashSet<Long>
 
     init {
         isDaemon = true
         eventList = PriorityBlockingQueue(10) { lhs, rhs ->
-            lhs.getCycle().compareTo(rhs.getCycle())
+            lhs.executionTime.compareTo(rhs.executionTime)
         }
         eventIds = HashSet()
     }
@@ -30,6 +30,11 @@ class Scheduler : Thread() {
                 continue
             }
 
+            if (!eventList.peek().isReady()) {
+                sleep()
+                continue
+            }
+
             val task = eventList.remove()
 
             // check if the event was stopped
@@ -38,8 +43,7 @@ class Scheduler : Thread() {
                 continue
             }
             eventIds.remove(task.eventId)
-            task.setDontExpire()
-            task.execute()
+            task()
         }
     }
 
@@ -54,7 +58,7 @@ class Scheduler : Thread() {
         eventList.clear()
     }
 
-    fun addEvent(task: SchedulerTask): Long {
+    fun addEvent(task: Task): Long {
         if (state != THREAD_STATE_RUNNING) {
             throw Exception("Scheduler is not running")
         }

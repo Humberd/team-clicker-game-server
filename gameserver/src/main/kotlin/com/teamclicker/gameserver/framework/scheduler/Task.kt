@@ -1,34 +1,25 @@
 package com.teamclicker.gameserver.framework.scheduler
 
-typealias TaskFunction = () -> Void
+typealias TaskFunction = () -> Unit
 
 open class Task {
-    protected var expiration = 0L
+    var executionTime = 0L
         private set
+
+    var eventId: Long = 0
+
     val taskFunction: TaskFunction
 
     constructor(delayMs: Long, taskFunction: TaskFunction) {
-        expiration = System.currentTimeMillis() + delayMs
+        executionTime = System.currentTimeMillis() + delayMs
         this.taskFunction = taskFunction
     }
 
-    constructor(taskFunction: TaskFunction) {
-        this.taskFunction = taskFunction
+    constructor(taskFunction: TaskFunction) : this(0, taskFunction)
+
+    fun isReady(): Boolean {
+        return executionTime <= System.currentTimeMillis()
     }
 
-    fun setDontExpire() {
-        expiration = 0L
-    }
-
-    fun hasExpired(): Boolean {
-        if (expiration == 0L) {
-            return false
-        }
-
-        return expiration < System.currentTimeMillis()
-    }
-
-    fun execute() {
-        taskFunction()
-    }
+    operator fun invoke() = taskFunction()
 }
