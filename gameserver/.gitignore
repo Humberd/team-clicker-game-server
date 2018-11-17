@@ -24,3 +24,8 @@
 /nbdist/
 /.nb-gradle/
 /.mvn/
+
+*.key
+*.key.pub
+*.der
+*.pem
