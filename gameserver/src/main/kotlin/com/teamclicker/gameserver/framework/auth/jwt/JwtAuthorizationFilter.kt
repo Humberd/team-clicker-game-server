@@ -3,35 +3,32 @@ package com.teamclicker.gameserver.framework.auth.jwt
 import com.teamclicker.gameserver.Constants
 import com.teamclicker.gameserver.framework.auth.jwt.mappers.toJwtData
 import io.jsonwebtoken.Jwts
-import org.springframework.security.authentication.AuthenticationManager
+import mu.KLogging
+import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ServerWebExchange
+import org.springframework.web.server.WebFilterChain
+import reactor.core.publisher.Mono
 import java.util.*
-import javax.servlet.FilterChain
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Service
 class JwtAuthorizationFilter(
-    authManager: AuthenticationManager,
     private val jwtCryptoKeys: JwtCryptoKeys
-) : BasicAuthenticationFilter(authManager) {
-    override fun doFilterInternal(
-        req: HttpServletRequest,
-        res: HttpServletResponse,
-        chain: FilterChain
-    ) {
-        val auth = extractCredentials(req)
+) : AuthenticationWebFilter(BearerTokenReactiveAuthenticationManager()) {
+
+    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
+        val auth = extractCredentials(exchange.request)
         if (auth.isPresent) {
             SecurityContextHolder.getContext().authentication = auth.get()
         }
-        chain.doFilter(req, res)
+        return chain.filter(exchange)
     }
 
-    private fun extractCredentials(req: HttpServletRequest): Optional<Authentication> {
-        val header = req.getHeader(Constants.JWT_HEADER_NAME)
+    private fun extractCredentials(req: ServerHttpRequest): Optional<Authentication> {
+        val header = req.headers.getFirst(Constants.JWT_HEADER_NAME)
 
         return headerParser(header)
     }
@@ -57,4 +54,6 @@ class JwtAuthorizationFilter(
 
         return JwtAuthenticationToken(jwtData)
     }
+
+    companion object: KLogging()
 }
