@@ -6,25 +6,27 @@ import io.jsonwebtoken.Jwts
 import mu.KLogging
 import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.web.server.authentication.AuthenticationWebFilter
-import org.springframework.stereotype.Service
 import org.springframework.web.server.ServerWebExchange
-import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
 import java.util.*
+import java.util.function.Function
 
-@Service
 class JwtAuthorizationFilter(
     private val jwtCryptoKeys: JwtCryptoKeys
-) : AuthenticationWebFilter(BearerTokenReactiveAuthenticationManager()) {
+) : Function<ServerWebExchange, Mono<Authentication>> {
 
-    override fun filter(exchange: ServerWebExchange, chain: WebFilterChain): Mono<Void> {
+    override fun apply(t: ServerWebExchange): Mono<Authentication> {
+        return Mono.justOrEmpty(t)
+            .flatMap(this::filter)
+    }
+
+
+    fun filter(exchange: ServerWebExchange): Mono<Authentication> {
         val auth = extractCredentials(exchange.request)
         if (auth.isPresent) {
-            SecurityContextHolder.getContext().authentication = auth.get()
+            return Mono.just(auth.get())
         }
-        return chain.filter(exchange)
+        return Mono.empty()
     }
 
     private fun extractCredentials(req: ServerHttpRequest): Optional<Authentication> {
@@ -35,7 +37,7 @@ class JwtAuthorizationFilter(
 
     internal fun headerParser(header: String?): Optional<Authentication> {
         if (header === null || !header.startsWith(Constants.JWT_TOKEN_PREFIX)) {
-            logger.trace { "Request has no '${Constants.JWT_HEADER_NAME}' header or it doesn't start with '${Constants.JWT_TOKEN_PREFIX} '" }
+            logger.info { "Request has no '${Constants.JWT_HEADER_NAME}' header or it doesn't start with '${Constants.JWT_TOKEN_PREFIX} '" }
             return Optional.empty()
         }
 
@@ -55,5 +57,5 @@ class JwtAuthorizationFilter(
         return JwtAuthenticationToken(jwtData)
     }
 
-    companion object: KLogging()
+    companion object : KLogging()
 }
