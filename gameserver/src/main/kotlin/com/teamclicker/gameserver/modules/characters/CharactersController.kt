@@ -21,7 +21,7 @@ class CharactersController(
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/:characterId/choose")
+    @PostMapping("/{characterId}/choose")
     fun chooseCharacter(@PathVariable characterId: CharacterId,
                         jwt: JwtData): Mono<SessionId> {
         return Mono.just(charactersService.chooseCharacter(jwt, characterId))

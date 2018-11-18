@@ -43,6 +43,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!--KOTLIN-->
@@ -129,7 +135,6 @@
                 <configuration>
                     <args>
                         <arg>-Xjsr305=strict</arg>
-                        <arg>-XXLanguage:+InlineClasses</arg>
                     </args>
                     <compilerPlugins>
                         <plugin>spring</plugin>

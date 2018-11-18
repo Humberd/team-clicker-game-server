@@ -4,6 +4,7 @@ import com.teamclicker.gameserver.Constants.JWT_HEADER_NAME
 import com.teamclicker.gameserver.framework.auth.jwt.BearerTokenReactiveAuthenticationManager
 import com.teamclicker.gameserver.framework.auth.jwt.JwtAuthorizationFilter
 import com.teamclicker.gameserver.framework.auth.jwt.JwtCryptoKeys
+import com.teamclicker.gameserver.framework.auth.jwt.resolvers.JwtResolver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
@@ -14,6 +15,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
 import org.springframework.web.reactive.config.CorsRegistry
 import org.springframework.web.reactive.config.WebFluxConfigurer
+import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer
 
 
 @EnableWebFluxSecurity
@@ -62,4 +64,7 @@ class WebSecurity(
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
     }
 
+    override fun configureArgumentResolvers(configurer: ArgumentResolverConfigurer) {
+        configurer.addCustomResolver(JwtResolver())
+    }
 }
