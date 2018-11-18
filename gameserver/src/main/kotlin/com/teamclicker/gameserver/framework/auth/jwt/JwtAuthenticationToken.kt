@@ -1,5 +1,6 @@
 package com.teamclicker.gameserver.framework.auth.jwt
 
+import com.teamclicker.gameserver.framework.auth.jwt.models.JwtData
 import org.springframework.security.authentication.AbstractAuthenticationToken
 
 class JwtAuthenticationToken(

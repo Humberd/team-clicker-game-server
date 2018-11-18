@@ -1,7 +1,7 @@
 package com.teamclicker.gameserver.framework.auth.jwt.mappers
 
-import com.teamclicker.gameserver.framework.auth.jwt.JwtAuthenticationMethod
-import com.teamclicker.gameserver.framework.auth.jwt.JwtData
+import com.teamclicker.gameserver.framework.auth.jwt.models.JwtAuthenticationMethod
+import com.teamclicker.gameserver.framework.auth.jwt.models.JwtData
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.RequiredTypeException
 
