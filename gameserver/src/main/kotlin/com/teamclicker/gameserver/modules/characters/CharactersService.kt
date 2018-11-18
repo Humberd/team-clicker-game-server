@@ -24,8 +24,10 @@ class CharactersService(
         )
     )
 
-    fun getCharacters(): List<CharacterDto> {
-        return chars.map { it.copy() }
+    fun getCharacters(accountId: AccountId): List<CharacterDto> {
+        return chars
+            .filter { it.accountId == accountId }
+            .map { it.copy() }
     }
 
     fun chooseCharacter(jwt: JwtData, characterId: CharacterId): SessionId {

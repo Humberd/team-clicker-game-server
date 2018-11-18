@@ -16,14 +16,17 @@ class CharactersController(
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping()
-    fun getCharacters(): Mono<List<CharacterDto>> {
-        return Mono.just(charactersService.getCharacters())
+    fun getCharacters(jwt: JwtData): Mono<List<CharacterDto>> {
+        return Mono.just(charactersService.getCharacters(jwt.accountId))
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{characterId}/choose")
-    fun chooseCharacter(@PathVariable characterId: CharacterId,
-                        jwt: JwtData): Mono<SessionId> {
+    fun chooseCharacter(
+        @PathVariable characterId: CharacterId,
+        jwt: JwtData
+    ): Mono<SessionId> {
         return Mono.just(charactersService.chooseCharacter(jwt, characterId))
     }
+
 }
