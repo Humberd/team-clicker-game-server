@@ -3,6 +3,7 @@ package com.teamclicker.gameserver.framework.scriptingengine
 import com.teamclicker.gameserver.framework.g_spells
 import com.teamclicker.gameserver.framework.scriptingengine.spells.Spells
 import cz.habarta.typescript.generator.*
+import mu.KLogging
 import java.io.File
 import javax.script.ScriptEngineManager
 
@@ -10,10 +11,12 @@ class JsScriptingManager {
     val config = JsScriptingConfig(ScriptEngineManager())
 
     fun loadGlobalTypes() {
+        logger.info { "Loaded global types" }
     }
 
     fun loadTsTypeDefs() {
         generateEnumTypeDefs("data/enums.d.ts")
+        logger.info { "Loaded Typescript type defs" }
     }
 
     private fun generateEnumTypeDefs(fileName: String) {
@@ -32,9 +35,12 @@ class JsScriptingManager {
         g_spells = Spells(config)
         try {
             g_spells.loadFromXml()
+            logger.info { "Loaded spells" }
         } catch (e: Exception) {
-            println("Unable to load spells!")
+            logger.error { "Unable to load spells!" }
             throw e
         }
     }
+
+    companion object: KLogging()
 }

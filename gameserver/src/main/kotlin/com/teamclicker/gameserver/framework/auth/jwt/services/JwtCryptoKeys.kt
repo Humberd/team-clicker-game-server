@@ -1,4 +1,4 @@
-package com.teamclicker.gameserver.framework.auth.jwt
+package com.teamclicker.gameserver.framework.auth.jwt.services
 
 import com.teamclicker.gameserver.Constants.JWT_PUBLIC_KEY_NAME
 import org.springframework.core.io.ResourceLoader

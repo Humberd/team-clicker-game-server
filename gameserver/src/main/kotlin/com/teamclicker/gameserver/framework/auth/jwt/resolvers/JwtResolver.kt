@@ -9,7 +9,6 @@ import org.springframework.web.server.ServerWebExchange
 import reactor.core.publisher.Mono
 
 class JwtResolver : HandlerMethodArgumentResolver {
-
     override fun supportsParameter(parameter: MethodParameter): Boolean {
         return parameter.parameterType.isAssignableFrom(JwtData::class.java)
     }

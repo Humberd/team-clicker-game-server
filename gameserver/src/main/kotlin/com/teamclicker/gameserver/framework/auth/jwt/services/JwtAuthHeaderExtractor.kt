@@ -1,35 +1,28 @@
-package com.teamclicker.gameserver.framework.auth.jwt
+package com.teamclicker.gameserver.framework.auth.jwt.services
 
 import com.teamclicker.gameserver.Constants
+import com.teamclicker.gameserver.framework.auth.jwt.JwtAuthenticationToken
 import com.teamclicker.gameserver.framework.auth.jwt.mappers.toJwtData
 import io.jsonwebtoken.Jwts
 import mu.KLogging
 import org.springframework.http.server.reactive.ServerHttpRequest
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.security.core.Authentication
-import org.springframework.web.server.ServerWebExchange
-import reactor.core.publisher.Mono
+import org.springframework.stereotype.Service
 import java.util.*
-import java.util.function.Function
 
-class JwtAuthorizationFilter(
+@Service
+class JwtAuthHeaderExtractor(
     private val jwtCryptoKeys: JwtCryptoKeys
-) : Function<ServerWebExchange, Mono<Authentication>> {
+) {
 
-    override fun apply(t: ServerWebExchange): Mono<Authentication> {
-        return Mono.justOrEmpty(t)
-            .flatMap(this::filter)
+    fun extractCredentials(accessor: StompHeaderAccessor): Optional<Authentication> {
+        val header = accessor.getNativeHeader(Constants.JWT_HEADER_NAME)?.firstOrNull()
+
+        return headerParser(header)
     }
 
-
-    fun filter(exchange: ServerWebExchange): Mono<Authentication> {
-        val auth = extractCredentials(exchange.request)
-        if (auth.isPresent) {
-            return Mono.just(auth.get())
-        }
-        return Mono.empty()
-    }
-
-    private fun extractCredentials(req: ServerHttpRequest): Optional<Authentication> {
+    fun extractCredentials(req: ServerHttpRequest): Optional<Authentication> {
         val header = req.headers.getFirst(Constants.JWT_HEADER_NAME)
 
         return headerParser(header)
@@ -37,7 +30,7 @@ class JwtAuthorizationFilter(
 
     internal fun headerParser(header: String?): Optional<Authentication> {
         if (header === null || !header.startsWith(Constants.JWT_TOKEN_PREFIX)) {
-            logger.info { "Request has no '${Constants.JWT_HEADER_NAME}' header or it doesn't start with '${Constants.JWT_TOKEN_PREFIX} '" }
+            JwtAuthorizationFilter.logger.info { "Request has no '${Constants.JWT_HEADER_NAME}' header or it doesn't start with '${Constants.JWT_TOKEN_PREFIX} '" }
             return Optional.empty()
         }
 

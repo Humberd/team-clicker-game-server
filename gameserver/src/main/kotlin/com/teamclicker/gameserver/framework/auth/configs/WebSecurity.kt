@@ -1,9 +1,8 @@
-package com.teamclicker.gameserver.framework.config
+package com.teamclicker.gameserver.framework.auth.configs
 
 import com.teamclicker.gameserver.Constants.JWT_HEADER_NAME
 import com.teamclicker.gameserver.framework.auth.jwt.BearerTokenReactiveAuthenticationManager
-import com.teamclicker.gameserver.framework.auth.jwt.JwtAuthorizationFilter
-import com.teamclicker.gameserver.framework.auth.jwt.JwtCryptoKeys
+import com.teamclicker.gameserver.framework.auth.jwt.services.JwtAuthorizationFilter
 import com.teamclicker.gameserver.framework.auth.jwt.resolvers.JwtResolver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,7 +21,7 @@ import org.springframework.web.reactive.result.method.annotation.ArgumentResolve
 @EnableReactiveMethodSecurity
 @Configuration
 class WebSecurity(
-    private val cryptoKeys: JwtCryptoKeys
+    private val jwtAuthorizationFilter: JwtAuthorizationFilter
 ) : WebFluxConfigurer {
 
     @Bean
@@ -49,7 +48,7 @@ class WebSecurity(
     private fun bearerAuthenticationFilter(): AuthenticationWebFilter {
         val bearerAuthenticationFilter =
             AuthenticationWebFilter(BearerTokenReactiveAuthenticationManager())
-        val bearerConverter = JwtAuthorizationFilter(this.cryptoKeys)
+        val bearerConverter = jwtAuthorizationFilter
 
         bearerAuthenticationFilter.setAuthenticationConverter(bearerConverter)
 

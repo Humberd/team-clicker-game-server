@@ -7,6 +7,7 @@ import com.teamclicker.gameserver.framework.auth.session.models.WsSession
 import com.teamclicker.gameserver.modules.characters.CharacterId
 import org.springframework.stereotype.Service
 import java.util.*
+import javax.swing.text.html.Option
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
@@ -52,5 +53,14 @@ class SessionService {
         session.connectedAt = Calendar.getInstance()
     }
 
+
+    fun getSession(sessionId: SessionId): WsSession {
+        val session = sessions.get(sessionId)
+        if (session === null) {
+            throw Exception("Session does not exist")
+        }
+
+        return session
+    }
 
 }

@@ -1,10 +1,11 @@
 package com.teamclicker.gameserver.modules.characters
 
 import com.teamclicker.gameserver.framework.auth.jwt.models.JwtData
-import com.teamclicker.gameserver.framework.auth.session.models.SessionId
 import com.teamclicker.gameserver.modules.characters.models.CharacterDto
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 
@@ -20,13 +21,13 @@ class CharactersController(
         return Mono.just(charactersService.getCharacters(jwt.accountId))
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/{characterId}/choose")
-    fun chooseCharacter(
-        @PathVariable characterId: CharacterId,
-        jwt: JwtData
-    ): Mono<SessionId> {
-        return Mono.just(charactersService.chooseCharacter(jwt, characterId))
-    }
+//    @PreAuthorize("isAuthenticated()")
+//    @PostMapping("/{characterId}/choose")
+//    fun chooseCharacter(
+//        @PathVariable characterId: CharacterId,
+//        jwt: JwtData
+//    ): Mono<SessionId> {
+//        return Mono.just(charactersService.chooseCharacter(jwt, characterId))
+//    }
 
 }
