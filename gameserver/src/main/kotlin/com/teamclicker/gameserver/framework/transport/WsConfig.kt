@@ -8,14 +8,12 @@ import org.springframework.web.reactive.socket.WebSocketHandler
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter
 import java.util.HashMap
 
-
-
 @Configuration
-class WebConfig {
+class WsConfig {
     @Bean
-    fun handlerMapping(): HandlerMapping {
+    fun handlerMapping(myWebSocketHandler: MyWebSocketHandler): HandlerMapping {
         val map = HashMap<String, WebSocketHandler>()
-        map["/path"] = MyWebSocketHandler()
+        map["/path"] = myWebSocketHandler
 
         val mapping = SimpleUrlHandlerMapping()
         mapping.setUrlMap(map)

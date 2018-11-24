@@ -9,7 +9,7 @@ import java.util.function.Function
 
 @Service
 class JwtAuthorizationFilter(
-    private val jwtAuthHeaderExtractor: JwtAuthHeaderExtractor
+    private val jwtAuthExtractor: JwtAuthExtractor
 ) : Function<ServerWebExchange, Mono<Authentication>> {
 
     override fun apply(t: ServerWebExchange): Mono<Authentication> {
@@ -18,7 +18,7 @@ class JwtAuthorizationFilter(
     }
 
     fun filter(exchange: ServerWebExchange): Mono<Authentication> {
-        val auth = jwtAuthHeaderExtractor.extractCredentials(exchange.request)
+        val auth = jwtAuthExtractor.extractCredentials(exchange.request)
         if (auth.isPresent) {
             return Mono.just(auth.get())
         }

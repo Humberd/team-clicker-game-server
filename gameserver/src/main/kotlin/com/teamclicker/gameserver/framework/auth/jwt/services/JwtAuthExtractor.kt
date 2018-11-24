@@ -9,17 +9,28 @@ import org.springframework.http.server.reactive.ServerHttpRequest
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
+import org.springframework.util.StringUtils
+import org.springframework.web.reactive.socket.WebSocketSession
+import org.springframework.web.util.UriComponentsBuilder
+import org.springframework.web.util.UriUtils
+import java.net.URLDecoder
+import java.nio.charset.Charset
 import java.util.*
 
 @Service
-class JwtAuthHeaderExtractor(
+class JwtAuthExtractor(
     private val jwtCryptoKeys: JwtCryptoKeys
 ) {
 
-    fun extractCredentials(accessor: StompHeaderAccessor): Optional<Authentication> {
-        val header = accessor.getNativeHeader(Constants.JWT_HEADER_NAME)?.firstOrNull()
+    fun extractCredentials(session: WebSocketSession): Optional<Authentication> {
+        val header = UriComponentsBuilder
+            .fromUri(session.handshakeInfo.uri)
+            .build()
+            .queryParams
+            .getFirst(Constants.JWT_HEADER_NAME)
 
-        return headerParser(header)
+
+        return headerParser(URLDecoder.decode(header, Charset.forName("UTF-8").name()))
     }
 
     fun extractCredentials(req: ServerHttpRequest): Optional<Authentication> {
